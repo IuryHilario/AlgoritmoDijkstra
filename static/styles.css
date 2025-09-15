@@ -1,0 +1,43 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.content_esquerda {
+    width: 30%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: aqua;
+}
+
+.tamanho_matrix {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 10px;
+    background-color: lightgray;
+    padding: 10px;
+}
+
+.valores_matrix {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: lightgray;
+    padding: 10px;
+}
+
+.buscar_aresta {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: lightgray;
+    padding: 10px;
+}

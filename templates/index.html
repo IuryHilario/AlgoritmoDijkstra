@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmo Dijkstra</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>Algoritmo Dijkstra</h1>
+        </div>
+        <div class="content_esquerda">
+
+            <div class="tamanho_matrix">
+                <label for="tamanho">Tamanho da Matriz:</label>
+                <input type="number" id="tamanho" name="tamanho" min="2" max="10" value="5">
+                <button id="gerar_matriz">Gerar Matriz</button>
+            </div>
+
+            <div class="valores_matrix">
+                <div class="valor_vertice_1">
+                    <label for="inicio_vertice">Vértice Início:</label>
+                    <input type="number" id="inicio_vertice" name="inicio_vertice" min="1" max="100" value="1">
+                </div>
+                <div class="valor_vertice_2">
+                    <label for="fim_vertice">Vértice Fim:</label>
+                    <input type="number" id="fim_vertice" name="fim_vertice" min="1" max="100" value="1">
+                </div>
+                <div class="valor_peso">
+                    <label for="peso_aresta">Valor do Peso:</label>
+                    <input type="number" id="peso_aresta" name="peso_aresta" min="1" max="100" value="1">
+                </div>
+                <div class="botao_add">
+                    <button id="adicionar_aresta">Adicionar Aresta</button>
+                    <button id="remover_aresta">Remover Aresta</button>
+                </div>
+            </div>
+
+            <div class="buscar_aresta">
+                <div class="buscar_valores">
+                    <label for="buscar1">Buscar Vértice 1:</label>
+                    <input type="number" id="buscar1" name="buscar1" min="1" max="10" value="1">
+                    <label for="buscar2">Buscar Vértice 2:</label>
+                    <input type="number" id="buscar2" name="buscar2" min="1" max="10" value="1">
+                </div>
+                <div class="botao_buscar">
+                    <button id="buscar_aresta">Buscar Aresta</button>
+                    <button id="limpar_busca">Limpar Busca</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content_centro">
+            <div class="matrix_container">
+                <table id="matrix">
+                    <!-- A matriz será gerada e editada aqui -->
+                </table>
+            </div>
+        </div>
+
+        <div class="content_direita">
+            <!--
+                Será exibido a matrix com os valores dos pesos nos respectivos vértices
+                Será exibido o caminho mais curto entre os vértices selecionados
+                Será exibido o valor total do caminho mais curto
+            -->
+        </div>
+
+    </div>
+</body>
+</html>
