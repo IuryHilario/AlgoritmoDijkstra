@@ -6,7 +6,6 @@
     <title>Algoritmo de Dijkstra - Visualização Interativa</title>
     <link rel="stylesheet" href="../static/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 </head>
 <body>
     <div class="container">
@@ -26,7 +25,7 @@
                     <div class="input-group">
                         <label for="vertices">Número de Vértices:</label>
                         <div class="input-row">
-                            <input type="number" id="vertices" min="2" max="25" placeholder="(2-15)">
+                            <input type="number" id="vertices" min="2" max="26" placeholder="2">
                             <button id="createGraph" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Criar
                             </button>
@@ -39,11 +38,11 @@
                     <h3><i class="fas fa-link"></i> Gerenciar Arestas</h3>
                     <div class="input-group">
                         <label for="origem">Origem:</label>
-                        <input type="number" id="origem" min="0" placeholder="0">
+                        <input type="text" id="origem" maxlength="1" placeholder="A">
                     </div>
                     <div class="input-group">
                         <label for="destino">Destino:</label>
-                        <input type="number" id="destino" min="0" placeholder="1">
+                        <input type="text" id="destino" maxlength="1" placeholder="B">
                     </div>
                     <div class="input-group">
                         <label for="peso">Peso:</label>
@@ -64,18 +63,17 @@
                     <h3><i class="fas fa-search"></i> Buscar Caminho</h3>
                     <div class="input-group">
                         <label for="origemBusca">De:</label>
-                        <input type="number" id="origemBusca" min="0" placeholder="Início">
+                        <input type="text" id="origemBusca" maxlength="1" placeholder="A">
                     </div>
                     <div class="input-group">
                         <label for="destinoBusca">Para:</label>
-                        <input type="number" id="destinoBusca" min="0" placeholder="Destino">
+                        <input type="text" id="destinoBusca" maxlength="1" placeholder="B">
                     </div>
                     <button id="findPath" class="btn btn-primary btn-large">
                         <i class="fas fa-route"></i> Encontrar Caminho
                     </button>
                 </section>
             </aside>
-
 
             <!-- Visualização do Grafo -->
             <section class="visualization-area">
@@ -103,7 +101,6 @@
                     <canvas id="graphCanvas" width="600" height="500"></canvas>
                 </div>
             </section>
-
 
             <!-- Painel dos Resultados -->
             <aside class="results-panel">
@@ -134,5 +131,8 @@
             </aside>
         </main>
     </div>
+
+    <!-- script -->
+    <script src="../static/script.js"></script>
 </body>
 </html>
