@@ -26,6 +26,23 @@ document.getElementById("createGraph").addEventListener("click", () => {
         Array(numVertices).fill(0)
     );
 
+    
+// Botão de adicionar aresta
+document.getElementById("addEdge").addEventListener("click", () => {
+    const origem = document.getElementById("origem").value - 1;
+    const destino = document.getElementById("destino").value - 1;
+    const peso = parseInt(document.getElementById("peso").value);
+
+    if (isNaN(origem) || isNaN(destino) || isNaN(peso) || origem < 0 || destino < 0 || peso <= 0) {
+        alert("Insira valores válidos para origem, destino e peso.");
+        return;
+    }
+
+    graph[origem][destino] = peso;
+    drawGraph(); // redesenha o grafo atualizado
+});
+
+
     // distribui vértices em círculo
     positions = [];
     const centerX = canvas.width / 2;
