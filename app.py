@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 
+
 app = Flask(__name__)
 
 def dijkstra(graph, start, end):
@@ -46,6 +47,7 @@ def dijkstra(graph, start, end):
         "distancia": distances[end] if distances[end] != float('infinity') else None,
         "caminho": path
     }
+
 
 @app.route("/")
 def home():
