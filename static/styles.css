@@ -268,10 +268,52 @@ body, html {
     box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3);
 }
 
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
 .btn-large {
     padding: 12px 16px;
     font-size: 14px;
     width: 100%;
+}
+
+.btn.active {
+    transform: scale(0.95);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mode-status {
+    background: #e3f2fd;
+    border: 1px solid #90caf9;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #1565c0;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.mode-status.active {
+    background: #fff3e0;
+    border-color: #ffb74d;
+    color: #e65100;
+}
+
+.vertex-hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.vertex-selected {
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.8);
 }
 
 /* Containers de resultado */
@@ -283,6 +325,88 @@ body, html {
     font-size: 0.85rem;
     max-height: 200px;
     overflow-y: auto;
+}
+
+.result-item {
+    background: white;
+    border-radius: 6px;
+    padding: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result-item p {
+    margin-bottom: 8px;
+}
+
+.result-item p:last-child {
+    margin-bottom: 0;
+}
+
+.vertex-label {
+    background: #3b82f6;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.distance-value {
+    background: #10b981;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.path-display {
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: 4px;
+    padding: 8px;
+    margin: 4px 0;
+    font-family: monospace;
+    font-weight: bold;
+    color: #92400e;
+    text-align: center;
+}
+
+/* Estilos para a matriz de adjacência */
+.matrix-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.matrix-container th,
+.matrix-container td {
+    padding: 4px 6px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+.matrix-container th {
+    background-color: #e9ecef;
+    font-weight: bold;
+}
+
+.matrix-container td {
+    background-color: white;
+}
+
+.matrix-container td:not(:first-child) {
+    font-family: monospace;
+}
+
+.matrix-container .cell-edge {
+    background-color: #dbeafe !important;
+    color: #1d4ed8;
+    font-weight: bold;
+}
+
+.matrix-container .cell-empty {
+    background-color: #f9fafb !important;
+    color: #9ca3af;
 }
 
 /* Media queries para responsividade */
