@@ -10,13 +10,13 @@ const vertexLabels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 // Canvas e contexto
 const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
-let positions = []; // posições dos vértices para desenhar
-let lastPath = [];  // último caminho encontrado
+let positions = [];
+let lastPath = [];
 
 // Estados dos modos interativos
-let currentMode = null; // null, 'addEdge', 'findPath'
-let selectedVertices = []; // vértices selecionados no modo atual
-let hoveredVertex = -1; // vértice sobre o qual o mouse está
+let currentMode = null;
+let selectedVertices = [];
+let hoveredVertex = -1;
 
 // Elementos da interface
 const modeStatus = document.getElementById("modeStatus");
