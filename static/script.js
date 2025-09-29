@@ -88,7 +88,6 @@ function getVertexAt(x, y) {
 }
 
 // Função para calcular posições dos vértices
-function calculateVertexPositions() {
     positions = [];
     if (numVertices === 0) return;
 
