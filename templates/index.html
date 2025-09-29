@@ -18,23 +18,11 @@
         <main class="main-content">
             <!-- Painel de Controle -->
             <aside class="control-panel">
-                
+
                 <!-- Configurações do Grafo -->
                 <section class="panel-section">
                     <h3><i class="fas fa-cogs"></i> Configuração do Grafo</h3>
                     <div class="input-group">
-                        <!-- Trecho A -->
-                    <div class="input-group">
-                         <label for="origem">Vértice de Origem:</label>
-                             <input type="number" id="origem" min="1" placeholder="Origem">
-                    </div>
-
-                        <!-- Trecho B -->
-                    <div class="input-group">
-                          <label for="destino">Vértice de Destino:</label>
-                              <input type="number" id="destino" min="1" placeholder="Destino">
-                    </div>
-
                         <label for="vertices">Número de Vértices:</label>
                         <div class="input-row">
                             <input type="number" id="vertices" min="2" max="26" placeholder="2">
@@ -42,48 +30,27 @@
                                 <i class="fas fa-plus"></i> Criar
                             </button>
                         </div>
-                    </div>
-                </section>
-
-                <!-- Controle das Arestas -->
-                <section class="panel-section">
-                    <h3><i class="fas fa-link"></i> Gerenciar Arestas</h3>
-                    <div class="input-group">
-                        <label for="origem">Origem:</label>
-                        <input type="text" id="origem" maxlength="1" placeholder="A">
-                    </div>
-                    <div class="input-group">
-                        <label for="destino">Destino:</label>
-                        <input type="text" id="destino" maxlength="1" placeholder="B">
-                    </div>
-                    <div class="input-group">
-                        <label for="peso">Peso:</label>
-                        <input type="number" id="peso" min="1" placeholder="1">
-                    </div>
-                    <div class="button-group">
-                        <button id="addEdge" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Adicionar
-                        </button>
-                        <button id="removeEdge" class="btn btn-danger">
-                            <i class="fas fa-minus"></i> Remover
-                        </button>
-                    </div>
-                </section>
-
-                <!-- Buscar Caminho -->
-                <section class="panel-section">
-                    <h3><i class="fas fa-search"></i> Buscar Caminho</h3>
-                    <div class="input-group">
-                        <label for="origemBusca">De:</label>
-                        <input type="text" id="origemBusca" maxlength="1" placeholder="A">
-                    </div>
-                    <div class="input-group">
-                        <label for="destinoBusca">Para:</label>
-                        <input type="text" id="destinoBusca" maxlength="1" placeholder="B">
-                    </div>
-                    <button id="findPath" class="btn btn-primary btn-large">
-                        <i class="fas fa-route"></i> Encontrar Caminho
+                    <!-- Botão para gerar um grafo aleatório -->
+                    <button id="generateRandomGraph" class="btn btn-secondary">
+                        <i class="fas fa-random"></i> Gerar Aleatório
                     </button>
+                    </div>
+                </section>
+
+                <!-- Modos Interativos -->
+                <section class="panel-section">
+                    <h3><i class="fas fa-mouse-pointer"></i> Modo Interativo</h3>
+                    <div class="button-group">
+                        <button id="toggleAddEdgeMode" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Adicionar Aresta
+                        </button>
+                        <button id="toggleFindPathMode" class="btn btn-primary">
+                            <i class="fas fa-route"></i> Buscar Caminho
+                        </button>
+                    </div>
+                    <div id="modeStatus" class="mode-status">
+                        Clique em "Adicionar Aresta" ou "Buscar Caminho" para começar
+                    </div>
                 </section>
             </aside>
 
@@ -110,7 +77,7 @@
                     </div>
                 </div>
                 <div class="canvas-container">
-                    <canvas id="graphCanvas" width="600" height="500"></canvas>
+                    <canvas id="graphCanvas" width="900" height="500"></canvas>
                 </div>
             </section>
 
