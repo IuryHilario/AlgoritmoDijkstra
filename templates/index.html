@@ -18,50 +18,41 @@
         <main class="main-content">
             <!-- Painel de Controle -->
             <aside class="control-panel">
-
                 <!-- Configurações do Grafo -->
                 <section class="panel-section">
-                    <h3><i class="fas fa-cogs"></i> Configuração do Grafo</h3>
+                    <h3><i class="fas fa-cogs"></i> Criar Grafo</h3>
                     <div class="input-group">
-                        <!-- Trecho A -->
-                    <div class="input-group">
-                         <label for="origem">Vértice de Origem:</label>
-                             <input type="number" id="origem" min="1" placeholder="Origem">
-                    </div>
-
-                        <!-- Trecho B -->
-                    <div class="input-group">
-                          <label for="destino">Vértice de Destino:</label>
-                              <input type="number" id="destino" min="1" placeholder="Destino">
-                    </div>
-
-                        <label for="vertices">Número de Vértices:</label>
+                        <label for="vertices">Número de Vértices (2-26):</label>
                         <div class="input-row">
-                            <input type="number" id="vertices" min="2" max="26" placeholder="2">
+                            <input type="number" id="vertices" min="2" max="26" value="4">
                             <button id="createGraph" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Criar
                             </button>
                         </div>
-                    <!-- Botão para gerar um grafo aleatório -->
-                    <button id="generateRandomGraph" class="btn btn-secondary">
-                        <i class="fas fa-random"></i> Gerar Aleatório
-                    </button>
+                        <button id="generateRandomGraph" class="btn btn-secondary btn-large">
+                            <i class="fas fa-random"></i> Gerar Grafo Aleatório
+                        </button>
                     </div>
                 </section>
 
-                <!-- Modos Interativos -->
+                <!-- Ações Principais -->
                 <section class="panel-section">
-                    <h3><i class="fas fa-mouse-pointer"></i> Modo Interativo</h3>
-                    <div class="button-group">
-                        <button id="toggleAddEdgeMode" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Adicionar Aresta
-                        </button>
-                        <button id="toggleFindPathMode" class="btn btn-primary">
-                            <i class="fas fa-route"></i> Buscar Caminho
-                        </button>
-                    </div>
+                    <h3><i class="fas fa-mouse-pointer"></i> Ações</h3>
+
+                    <button id="addEdgeMode" class="btn btn-success btn-large">
+                        <i class="fas fa-plus"></i> Adicionar Arestas
+                    </button>
+
+                    <button id="findPathMode" class="btn btn-primary btn-large">
+                        <i class="fas fa-route"></i> Encontrar Caminho Mínimo
+                    </button>
+
+                    <button id="resetGraph" class="btn btn-danger btn-large">
+                        <i class="fas fa-trash"></i> Limpar Grafo
+                    </button>
+
                     <div id="modeStatus" class="mode-status">
-                        Clique em "Adicionar Aresta" ou "Buscar Caminho" para começar
+                        Crie um grafo para começar
                     </div>
                 </section>
             </aside>
@@ -81,7 +72,7 @@
                             <span class="legend-color vertex-destination"></span> Destino
                         </span>
                         <span class="legend-item">
-                            <span class="legend-color edge-path"></span> Caminho
+                            <span class="legend-color edge-path"></span> Caminho Mínimo
                         </span>
                         <span class="legend-item">
                             <i class="fas fa-arrow-right legend-arrow"></i> Direção
@@ -95,27 +86,27 @@
 
             <!-- Painel dos Resultados -->
             <aside class="results-panel">
-                <!-- Desenho da Matriz -->
+                <!-- Matriz de Adjacência -->
                 <section class="panel-section">
                     <h3><i class="fas fa-table"></i> Matriz de Adjacência</h3>
                     <div id="adjacencyMatrix" class="matrix-container"></div>
                 </section>
 
-                <!-- Resultado -->
+                <!-- Resultado do Dijkstra -->
                 <section class="panel-section">
                     <h3><i class="fas fa-flag-checkered"></i> Resultado</h3>
                     <div id="results" class="results-container"></div>
                 </section>
 
-                <!-- Baixar Grafo ou Matriz -->
+                <!-- Exportar -->
                 <section class="panel-section">
                     <h3><i class="fas fa-download"></i> Exportar</h3>
                     <div class="button-group">
                         <button id="downloadGraph" class="btn btn-secondary">
-                            <i class="fas fa-image"></i> Baixar Grafo
+                            <i class="fas fa-image"></i> Salvar PNG
                         </button>
                         <button id="downloadMatrix" class="btn btn-secondary">
-                            <i class="fas fa-file-csv"></i> Baixar Matriz
+                            <i class="fas fa-file-csv"></i> Salvar CSV
                         </button>
                     </div>
                 </section>
@@ -123,7 +114,6 @@
         </main>
     </div>
 
-    <!-- script -->
     <script src="../static/script.js"></script>
 </body>
 </html>

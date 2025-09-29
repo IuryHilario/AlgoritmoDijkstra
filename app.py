@@ -1,12 +1,15 @@
 from flask import Flask, render_template, request, jsonify
 
-
 app = Flask(__name__)
 
 def dijkstra(graph, start, end):
     """
     Implementa o algoritmo de Dijkstra para encontrar o caminho mais curto em um grafo.
     """
+    # Validar se os vértices existem no grafo
+    if start not in graph or end not in graph:
+        return {"distancia": None, "caminho": []}
+
     # Inicializar distâncias e nós anteriores
     distances = {node: float('infinity') for node in graph}
     distances[start] = 0
@@ -48,20 +51,32 @@ def dijkstra(graph, start, end):
         "caminho": path
     }
 
-
 @app.route("/")
 def home():
     return render_template("index.html")
 
 @app.route("/dijkstra", methods=["POST"])
 def run_dijkstra():
-    data = request.get_json()
-    graph = data["graph"]
-    start = data["start"]
-    end = data["end"]
+    try:
+        data = request.get_json()
 
-    result = dijkstra(graph, start, end)
-    return jsonify(result)
+        # Validar dados de entrada
+        if not data or 'graph' not in data or 'start' not in data or 'end' not in data:
+            return jsonify({"erro": "Dados inválidos"}), 400
+
+        graph = data["graph"]
+        start = data["start"]
+        end = data["end"]
+
+        # Validar se o grafo não está vazio
+        if not graph:
+            return jsonify({"erro": "Grafo vazio"}), 400
+
+        result = dijkstra(graph, start, end)
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"erro": f"Erro interno: {str(e)}"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

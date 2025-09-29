@@ -1,10 +1,6 @@
-// Algoritmo de Dijkstra - Interface Interativa
-
-// Representação do grafo em matriz de adjacência
+// Variáveis globais
 let graph = [];
 let numVertices = 0;
-
-// Letras para os vértices
 const vertexLabels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 // Canvas e contexto
@@ -13,15 +9,15 @@ const ctx = canvas.getContext("2d");
 let positions = [];
 let lastPath = [];
 
-// Estados dos modos interativos
-let currentMode = null;
+// Estados dos modos
+let currentMode = null; // 'addEdge' ou 'findPath'
 let selectedVertices = [];
 let hoveredVertex = -1;
 
 // Elementos da interface
 const modeStatus = document.getElementById("modeStatus");
-const toggleAddEdgeBtn = document.getElementById("toggleAddEdgeMode");
-const toggleFindPathBtn = document.getElementById("toggleFindPathMode");
+const addEdgeModeBtn = document.getElementById("addEdgeMode");
+const findPathModeBtn = document.getElementById("findPathMode");
 
 // Funções auxiliares
 function resetMode() {
@@ -36,37 +32,58 @@ function resetMode() {
 function updateModeStatus() {
     if (!modeStatus) return;
 
-    if (currentMode === null) {
-        modeStatus.textContent = 'Clique em "Adicionar Aresta" ou "Buscar Caminho" para começar';
+    if (numVertices === 0) {
+        modeStatus.textContent = 'Crie um grafo para começar';
+        modeStatus.className = 'mode-status';
+    } else if (currentMode === null) {
+        modeStatus.textContent = 'Clique em "Adicionar Arestas" ou "Encontrar Caminho"';
         modeStatus.className = 'mode-status';
     } else if (currentMode === 'addEdge') {
         if (selectedVertices.length === 0) {
-            modeStatus.textContent = 'Clique no vértice de origem da aresta';
+            modeStatus.textContent = '🎯 Clique no vértice de ORIGEM da aresta';
         } else if (selectedVertices.length === 1) {
-            modeStatus.textContent = `Origem: ${vertexLabels[selectedVertices[0]]} - Clique no vértice de destino`;
+            modeStatus.textContent = `✅ Origem: ${vertexLabels[selectedVertices[0]]} | 🎯 Clique no vértice de DESTINO`;
         }
         modeStatus.className = 'mode-status active';
     } else if (currentMode === 'findPath') {
         if (selectedVertices.length === 0) {
-            modeStatus.textContent = 'Clique no vértice de origem do caminho';
+            modeStatus.textContent = '🎯 Clique no vértice de INÍCIO do caminho';
         } else if (selectedVertices.length === 1) {
-            modeStatus.textContent = `Origem: ${vertexLabels[selectedVertices[0]]} - Clique no vértice de destino`;
+            modeStatus.textContent = `✅ Início: ${vertexLabels[selectedVertices[0]]} | 🎯 Clique no vértice de DESTINO`;
         }
         modeStatus.className = 'mode-status active';
     }
 }
 
 function updateButtonStates() {
-    if (toggleAddEdgeBtn) {
-        toggleAddEdgeBtn.className = currentMode === 'addEdge' ? 'btn btn-success active' : 'btn btn-success';
+    if (addEdgeModeBtn) {
+        addEdgeModeBtn.className = currentMode === 'addEdge' ?
+            'btn btn-success btn-large active' : 'btn btn-success btn-large';
     }
-    if (toggleFindPathBtn) {
-        toggleFindPathBtn.className = currentMode === 'findPath' ? 'btn btn-primary active' : 'btn btn-primary';
+    if (findPathModeBtn) {
+        findPathModeBtn.className = currentMode === 'findPath' ?
+            'btn btn-primary btn-large active' : 'btn btn-primary btn-large';
+    }
+}
+
+function calculateVertexPositions() {
+    positions = [];
+    if (numVertices === 0) return;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY) - 60;
+
+    for (let i = 0; i < numVertices; i++) {
+        const angle = (2 * Math.PI * i) / numVertices - Math.PI / 2;
+        positions.push({
+            x: centerX + radius * Math.cos(angle),
+            y: centerY + radius * Math.sin(angle)
+        });
     }
 }
 
 function getVertexAt(x, y) {
-    // Ajustar coordenadas para o redimensionamento do canvas
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
@@ -87,42 +104,25 @@ function getVertexAt(x, y) {
     return -1;
 }
 
-// Função para calcular posições dos vértices
-    positions = [];
-    if (numVertices === 0) return;
-
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = Math.min(centerX, centerY) - 50;
-
-    for (let i = 0; i < numVertices; i++) {
-        const angle = (2 * Math.PI * i) / numVertices;
-        positions.push({
-            x: centerX + radius * Math.cos(angle),
-            y: centerY + radius * Math.sin(angle)
-        });
-    }
-}
-
-// Criar grafo com N vértices
+// Eventos dos botões
 document.getElementById("createGraph").addEventListener("click", () => {
-    numVertices = parseInt(document.getElementById("vertices").value);
-    if (isNaN(numVertices) || numVertices < 2 || numVertices > 26) {
-        alert("Insira um número válido de vértices (2 a 26).");
+    const vertices = parseInt(document.getElementById("vertices").value);
+    if (isNaN(vertices) || vertices < 2 || vertices > 26) {
+        alert("Digite um número válido de vértices (2 a 26).");
         return;
     }
 
-    graph = Array.from({ length: numVertices }, () =>
-        Array(numVertices).fill(0)
-    );
+    numVertices = vertices;
+    graph = Array.from({ length: numVertices }, () => Array(numVertices).fill(0));
+    lastPath = [];
 
     calculateVertexPositions();
     resetMode();
     renderMatrix();
     drawGraph();
+    clearResults();
 });
 
-// Gerar grafo aleatório
 document.getElementById("generateRandomGraph").addEventListener("click", () => {
     if (numVertices < 2) {
         alert("Crie um grafo primeiro!");
@@ -132,40 +132,92 @@ document.getElementById("generateRandomGraph").addEventListener("click", () => {
     // Limpar grafo atual
     graph = Array.from({ length: numVertices }, () => Array(numVertices).fill(0));
 
-    // Adicionar arestas aleatórias
-    const numEdges = Math.floor(Math.random() * (numVertices * (numVertices - 1) / 4)) + numVertices;
-
-    for (let i = 0; i < numEdges; i++) {
-        const origem = Math.floor(Math.random() * numVertices);
-        let destino = Math.floor(Math.random() * numVertices);
-
-        // Evitar laços próprios
-        while (destino === origem) {
-            destino = Math.floor(Math.random() * numVertices);
+    // Função para embaralhar array (Fisher-Yates)
+    function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
+        return shuffled;
+    }
 
-        // Peso aleatório entre 1 e 10
-        const peso = Math.floor(Math.random() * 10) + 1;
+    // Criar lista de vértices e embaralhar
+    const vertices = Array.from({ length: numVertices }, (_, i) => i);
+    const shuffledVertices = shuffleArray(vertices);
+
+    // Criar caminho conectivo aleatório
+    for (let i = 0; i < shuffledVertices.length; i++) {
+        const origem = shuffledVertices[i];
+        const destino = shuffledVertices[(i + 1) % shuffledVertices.length];
+        const peso = Math.floor(Math.random() * 9) + 1;
         graph[origem][destino] = peso;
     }
 
+    // Adicionar arestas aleatórias extras para tornar o grafo mais denso
+    const maxPossibleEdges = numVertices * (numVertices - 1); // Máximo para grafo direcionado
+    const currentEdges = numVertices; // Já temos as arestas de conectividade
+    const availableSlots = maxPossibleEdges - currentEdges;
+
+    // Calcular número de arestas extras (entre 30% e 70% das possíveis)
+    const minExtraEdges = Math.floor(availableSlots * 0.1);
+    const maxExtraEdges = Math.floor(availableSlots * 0.4);
+    const numEdgesExtras = Math.floor(Math.random() * (maxExtraEdges - minExtraEdges + 1)) + minExtraEdges;
+
+    // Criar lista de todas as possíveis conexões (exceto auto-loops)
+    const possibleConnections = [];
+    for (let i = 0; i < numVertices; i++) {
+        for (let j = 0; j < numVertices; j++) {
+            if (i !== j && graph[i][j] === 0) { // Não sobrescrever arestas existentes
+                possibleConnections.push([i, j]);
+            }
+        }
+    }
+
+    // Embaralhar e selecionar conexões aleatórias
+    const shuffledConnections = shuffleArray(possibleConnections);
+    const selectedConnections = shuffledConnections.slice(0, Math.min(numEdgesExtras, shuffledConnections.length));
+
+    // Adicionar as arestas selecionadas
+    selectedConnections.forEach(([origem, destino]) => {
+        const peso = Math.floor(Math.random() * 9) + 1;
+        graph[origem][destino] = peso;
+    });
+
+    lastPath = [];
+    resetMode();
     renderMatrix();
     drawGraph();
+    clearResults();
 });
 
-// Eventos dos botões de modo
-toggleAddEdgeBtn.addEventListener("click", () => {
+// Modos de interação
+addEdgeModeBtn.addEventListener("click", () => {
+    if (numVertices === 0) {
+        alert("Crie um grafo primeiro!");
+        return;
+    }
+
     if (currentMode === 'addEdge') {
         resetMode();
     } else {
         currentMode = 'addEdge';
         selectedVertices = [];
+        lastPath = [];
         updateModeStatus();
         updateButtonStates();
+        clearResults();
+        drawGraph();
     }
 });
 
-toggleFindPathBtn.addEventListener("click", () => {
+// Modo de encontrar caminho
+findPathModeBtn.addEventListener("click", () => {
+    if (numVertices === 0) {
+        alert("Crie um grafo primeiro!");
+        return;
+    }
+
     if (currentMode === 'findPath') {
         resetMode();
     } else {
@@ -174,13 +226,26 @@ toggleFindPathBtn.addEventListener("click", () => {
         lastPath = [];
         updateModeStatus();
         updateButtonStates();
+        clearResults();
         drawGraph();
+    }
+});
+
+// Resetar grafo
+document.getElementById("resetGraph").addEventListener("click", () => {
+    if (numVertices > 0) {
+        graph = Array.from({ length: numVertices }, () => Array(numVertices).fill(0));
+        lastPath = [];
+        resetMode();
+        renderMatrix();
+        drawGraph();
+        clearResults();
     }
 });
 
 // Eventos do canvas
 canvas.addEventListener("mousemove", (e) => {
-    if (currentMode === null) return;
+    if (currentMode === null || numVertices === 0) return;
 
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -190,7 +255,7 @@ canvas.addEventListener("mousemove", (e) => {
     if (vertex !== hoveredVertex) {
         hoveredVertex = vertex;
         canvas.style.cursor = vertex !== -1 ? 'pointer' : 'default';
-        drawGraph(); // Redesenhar para mostrar hover
+        drawGraph();
     }
 });
 
@@ -229,7 +294,7 @@ function handleAddEdgeClick(vertex) {
         const destino = vertex;
 
         if (origem === destino) {
-            alert("Não é possível criar uma aresta para o próprio vértice!");
+            alert("❌ Não é possível criar uma aresta para o próprio vértice!");
             return;
         }
 
@@ -243,7 +308,7 @@ function handleAddEdgeClick(vertex) {
 
         const pesoNum = parseInt(peso);
         if (isNaN(pesoNum) || pesoNum <= 0) {
-            alert("Digite um peso válido (número positivo)!");
+            alert("❌ Digite um peso válido (número positivo)!");
             return;
         }
 
@@ -252,6 +317,8 @@ function handleAddEdgeClick(vertex) {
         updateModeStatus();
         renderMatrix();
         drawGraph();
+
+        showSuccessMessage(`✅ Aresta ${vertexLabels[origem]} → ${vertexLabels[destino]} (peso: ${pesoNum}) adicionada!`);
     }
 }
 
@@ -265,7 +332,7 @@ function handleFindPathClick(vertex) {
         const destino = vertex;
 
         if (origem === destino) {
-            alert("Origem e destino não podem ser iguais!");
+            alert("❌ Origem e destino devem ser diferentes!");
             return;
         }
 
@@ -274,58 +341,7 @@ function handleFindPathClick(vertex) {
     }
 }
 
-// Adicionar aresta (método manual)
-document.getElementById("addEdge").addEventListener("click", () => {
-    const u = vertexLabels.indexOf(document.getElementById("origem").value.toUpperCase());
-    const v = vertexLabels.indexOf(document.getElementById("destino").value.toUpperCase());
-    const w = parseInt(document.getElementById("peso").value);
-
-    if (u === -1 || v === -1 || isNaN(w)) {
-        alert("Valores inválidos para vértices ou peso.");
-        return;
-    }
-
-    graph[u][v] = w;
-    renderMatrix();
-    drawGraph();
-});
-
-// Remover aresta
-document.getElementById("removeEdge").addEventListener("click", () => {
-    const u = vertexLabels.indexOf(document.getElementById("origem").value.toUpperCase());
-    const v = vertexLabels.indexOf(document.getElementById("destino").value.toUpperCase());
-
-    if (u === -1 || v === -1) {
-        alert("Valores inválidos para vértices.");
-        return;
-    }
-
-    graph[u][v] = 0;
-    renderMatrix();
-    drawGraph();
-});
-
-// Executar Dijkstra (método manual)
-document.getElementById("findPath").addEventListener("click", () => {
-    const origem = vertexLabels.indexOf(document.getElementById("origemBusca").value.toUpperCase());
-    const destino = vertexLabels.indexOf(document.getElementById("destinoBusca").value.toUpperCase());
-
-    if (origem === -1 || destino === -1) {
-        alert("Origem ou destino inválido.");
-        return;
-    }
-
-    executeDijkstra(origem, destino);
-});
-
-// Função centralizada para executar Dijkstra
 async function executeDijkstra(origem, destino) {
-    if (numVertices === 0) {
-        alert("Crie um grafo primeiro!");
-        return;
-    }
-
-    // Converter matriz para formato do backend
     const graphDict = {};
     for (let i = 0; i < numVertices; i++) {
         graphDict[vertexLabels[i]] = {};
@@ -339,9 +355,7 @@ async function executeDijkstra(origem, destino) {
     try {
         const response = await fetch('/dijkstra', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 graph: graphDict,
                 start: vertexLabels[origem],
@@ -353,44 +367,58 @@ async function executeDijkstra(origem, destino) {
 
         if (result.distancia !== null) {
             lastPath = result.caminho.map(v => vertexLabels.indexOf(v));
-            mostrarResultado(origem, destino, result.distancia, result.caminho);
+            showResult(origem, destino, result.distancia, result.caminho);
         } else {
             lastPath = [];
-            mostrarResultado(origem, destino, null, []);
+            showResult(origem, destino, null, []);
         }
 
         drawGraph(origem, destino, lastPath);
 
     } catch (error) {
         console.error('Erro ao executar Dijkstra:', error);
-        alert('Erro ao calcular o caminho. Verifique se o servidor está rodando.');
+        alert('❌ Erro ao calcular o caminho. Verifique se o servidor está rodando.');
     }
 }
 
-
-
 // Mostrar resultados
-function mostrarResultado(origem, destino, distancia, caminho) {
+function showResult(origem, destino, distancia, caminho) {
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
 
     if (distancia === null || caminho.length === 0) {
         resultsDiv.innerHTML = `<div class="result-item">
-            <p><strong>❌ Resultado:</strong></p>
-            <p>Não existe caminho de <span class="vertex-label">${vertexLabels[origem]}</span> até <span class="vertex-label">${vertexLabels[destino]}</span></p>
+            <p><strong>❌ Caminho não encontrado</strong></p>
+            <p>Não existe caminho de <span class="vertex-label">${vertexLabels[origem]}</span>
+            até <span class="vertex-label">${vertexLabels[destino]}</span></p>
+            <p><em>Verifique se os vértices estão conectados.</em></p>
         </div>`;
         return;
     }
 
     resultsDiv.innerHTML = `
         <div class="result-item">
-            <p><strong>✅ Caminho Encontrado!</strong></p>
-            <p><strong>Distância mínima:</strong> <span class="distance-value">${distancia}</span></p>
-            <p><strong>Caminho:</strong></p>
+            <p><strong>🎉 Caminho Encontrado!</strong></p>
+            <p><strong>📏 Distância mínima:</strong> <span class="distance-value">${distancia}</span></p>
+            <p><strong>🛤️ Caminho:</strong></p>
             <div class="path-display">${caminho.join(" → ")}</div>
-            <p><strong>Número de saltos:</strong> ${caminho.length - 1}</p>
+            <p><strong>📊 Estatísticas:</strong></p>
+            <p>• Número de saltos: ${caminho.length - 1}</p>
+            <p>• Vértices visitados: ${caminho.length}</p>
         </div>
     `;
+}
+
+function showSuccessMessage(message) {
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = `<div class="result-item">
+        <p>${message}</p>
+        <p><em>Continue adicionando arestas ou busque um caminho.</em></p>
+    </div>`;
+}
+
+function clearResults() {
+    document.getElementById("results").innerHTML = "";
 }
 
 // Renderizar matriz de adjacência
@@ -399,7 +427,7 @@ function renderMatrix() {
     matrixDiv.innerHTML = "";
 
     if (numVertices === 0) {
-        matrixDiv.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">Crie um grafo para visualizar a matriz</p>';
+        matrixDiv.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">Crie um grafo para ver a matriz</p>';
         return;
     }
 
@@ -414,7 +442,7 @@ function renderMatrix() {
         for (let j = 0; j < numVertices; j++) {
             const value = graph[i][j];
             const cellClass = value > 0 ? 'cell-edge' : 'cell-empty';
-            table += `<td class="${cellClass}">${value}</td>`;
+            table += `<td class="${cellClass}">${value || '-'}</td>`;
         }
         table += "</tr>";
     }
@@ -427,9 +455,17 @@ function renderMatrix() {
 function drawGraph(origem = null, destino = null, caminho = []) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (numVertices === 0) return;
+    if (numVertices === 0) {
+        // Desenhar mensagem de instrução
+        ctx.fillStyle = "#6b7280";
+        ctx.font = "18px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Crie um grafo para começar a visualização", canvas.width / 2, canvas.height / 2);
+        return;
+    }
 
-    // Desenhar arestas
+    // Desenhar arestas primeiro
     for (let u = 0; u < numVertices; u++) {
         for (let v = 0; v < numVertices; v++) {
             if (graph[u][v] !== 0) {
@@ -438,7 +474,7 @@ function drawGraph(origem = null, destino = null, caminho = []) {
         }
     }
 
-    // Desenhar vértices
+    // Desenhar vértices por último
     for (let i = 0; i < numVertices; i++) {
         drawVertex(i, origem, destino);
     }
@@ -448,7 +484,6 @@ function drawEdge(from, to, weight, caminho) {
     const fromPos = positions[from];
     const toPos = positions[to];
 
-    // Verificar se faz parte do caminho mínimo
     let isPathEdge = false;
     for (let i = 0; i < caminho.length - 1; i++) {
         if (caminho[i] === from && caminho[i + 1] === to) {
@@ -457,26 +492,25 @@ function drawEdge(from, to, weight, caminho) {
         }
     }
 
-    // Calcular pontos ajustados para não sobrepor os círculos
     const angle = Math.atan2(toPos.y - fromPos.y, toPos.x - fromPos.x);
-    const radius = 22; // raio do vértice + margem
+    const radius = 22;
 
     const startX = fromPos.x + radius * Math.cos(angle);
     const startY = fromPos.y + radius * Math.sin(angle);
     const endX = toPos.x - radius * Math.cos(angle);
     const endY = toPos.y - radius * Math.sin(angle);
 
-    // Desenhar linha
-    ctx.strokeStyle = isPathEdge ? "#000000" : "#555"; // Preto para caminho
-    ctx.lineWidth = isPathEdge ? 3 : 2;
+    // Linha da aresta
+    ctx.strokeStyle = isPathEdge ? "#fbbf24" : "#64748b";
+    ctx.lineWidth = isPathEdge ? 4 : 2;
 
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
     ctx.stroke();
 
-    // Desenhar seta
-    const arrowSize = isPathEdge ? 12 : 10;
+    // Seta
+    const arrowSize = isPathEdge ? 14 : 10;
     ctx.beginPath();
     ctx.moveTo(endX, endY);
     ctx.lineTo(
@@ -491,23 +525,21 @@ function drawEdge(from, to, weight, caminho) {
     ctx.fillStyle = ctx.strokeStyle;
     ctx.fill();
 
-    // Desenhar peso
+    // Peso da aresta
     const midX = (fromPos.x + toPos.x) / 2;
     const midY = (fromPos.y + toPos.y) / 2;
 
-    // Fundo branco para o peso
     ctx.fillStyle = "white";
     ctx.strokeStyle = "#333";
     ctx.lineWidth = 1;
 
     const textMetrics = ctx.measureText(weight);
-    const padding = 3;
-    ctx.fillRect(midX - textMetrics.width/2 - padding, midY - 8, textMetrics.width + 2*padding, 16);
-    ctx.strokeRect(midX - textMetrics.width/2 - padding, midY - 8, textMetrics.width + 2*padding, 16);
+    const padding = 4;
+    ctx.fillRect(midX - textMetrics.width/2 - padding, midY - 9, textMetrics.width + 2*padding, 18);
+    ctx.strokeRect(midX - textMetrics.width/2 - padding, midY - 9, textMetrics.width + 2*padding, 18);
 
-    // Texto do peso
-    ctx.fillStyle = isPathEdge ? "#000000" : "#333"; // Preto para caminho
-    ctx.font = "bold 12px Arial";
+    ctx.fillStyle = isPathEdge ? "#92400e" : "#374151";
+    ctx.font = "bold 13px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(weight, midX, midY);
@@ -517,66 +549,56 @@ function drawVertex(index, origem, destino) {
     const pos = positions[index];
     const isSelected = selectedVertices.includes(index);
     const isHovered = hoveredVertex === index && currentMode !== null;
-
-    // Verificar se o vértice faz parte do caminho
     const isPathVertex = lastPath.includes(index);
 
-    // Desenhar aura de hover/seleção
+    // Aura de hover/seleção
     if (isSelected || isHovered) {
         ctx.beginPath();
-        ctx.arc(pos.x, pos.y, 26, 0, 2 * Math.PI);
-        ctx.fillStyle = isSelected ? "rgba(251, 191, 36, 0.4)" : "rgba(251, 191, 36, 0.2)";
+        ctx.arc(pos.x, pos.y, 28, 0, 2 * Math.PI);
+        ctx.fillStyle = isSelected ? "rgba(251, 191, 36, 0.5)" : "rgba(251, 191, 36, 0.3)";
         ctx.fill();
     }
 
-    // Desenhar círculo do vértice
+    // Círculo do vértice
     ctx.beginPath();
     ctx.arc(pos.x, pos.y, 20, 0, 2 * Math.PI);
 
-    // Definir cor baseada no estado
     if (index === origem) {
-        ctx.fillStyle = "#10b981"; // origem verde
+        ctx.fillStyle = "#10b981";
     } else if (index === destino) {
-        ctx.fillStyle = "#ef4444"; // destino vermelho
+        ctx.fillStyle = "#ef4444";
     } else if (isPathVertex) {
-        ctx.fillStyle = "#fbbf24"; // vértice no caminho amarelo
+        ctx.fillStyle = "#fbbf24";
     } else if (isSelected) {
-        ctx.fillStyle = "#fbbf24"; // selecionado amarelo
+        ctx.fillStyle = "#f59e0b";
     } else if (isHovered) {
-        ctx.fillStyle = "#60a5fa"; // hover azul claro
+        ctx.fillStyle = "#60a5fa";
     } else {
-        ctx.fillStyle = "#3b82f6"; // normal azul
+        ctx.fillStyle = "#3b82f6";
     }
 
     ctx.fill();
 
     // Borda
-    ctx.strokeStyle = isHovered || isSelected ? "#fbbf24" : "#000";
+    ctx.strokeStyle = isHovered || isSelected ? "#fbbf24" : "#1e293b";
     ctx.lineWidth = isHovered || isSelected ? 3 : 2;
     ctx.stroke();
 
-    // Label do vértice
-    ctx.fillStyle = "#fff";
+    // Label
+    ctx.fillStyle = "#ffffff";
     ctx.font = "bold 14px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(vertexLabels[index], pos.x, pos.y);
 }
 
-// Resetar grafo
-document.getElementById("resetGraph").addEventListener("click", () => {
-    if (numVertices > 0) {
-        graph = Array.from({ length: numVertices }, () => Array(numVertices).fill(0));
-        lastPath = [];
-        resetMode();
-        renderMatrix();
-        drawGraph();
-        document.getElementById("results").innerHTML = "";
-    }
-});
-
 // Funções de download
 document.getElementById("downloadGraph").addEventListener("click", () => {
+    if (numVertices === 0) {
+        alert("Crie um grafo primeiro!");
+        return;
+    }
+
     const link = document.createElement('a');
     link.download = 'grafo_dijkstra.png';
     link.href = canvas.toDataURL();
@@ -610,24 +632,14 @@ document.getElementById("downloadMatrix").addEventListener("click", () => {
     window.URL.revokeObjectURL(url);
 });
 
-// Inicialização da página
+// Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     updateModeStatus();
     updateButtonStates();
     renderMatrix();
-
-    // Configuração inicial
-    document.getElementById("vertices").value = "4";
-
-    // Limpar campos de entrada
-    document.getElementById("origem").value = "";
-    document.getElementById("destino").value = "";
-    document.getElementById("peso").value = "";
-    document.getElementById("origemBusca").value = "";
-    document.getElementById("destinoBusca").value = "";
+    drawGraph();
 });
 
-// Recalcular posições quando a janela for redimensionada
 window.addEventListener('resize', () => {
     if (numVertices > 0) {
         calculateVertexPositions();
