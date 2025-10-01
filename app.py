@@ -3,9 +3,6 @@ from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 def dijkstra(graph, start, end):
-    """
-    Implementa o algoritmo de Dijkstra para encontrar o caminho mais curto em um grafo.
-    """
     # Validar se os vértices existem no grafo
     if start not in graph or end not in graph:
         return {"distancia": None, "caminho": []}
