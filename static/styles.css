@@ -1,3 +1,10 @@
+/*
+ * Algoritmo de Dijkstra - Estilos da Aplicação
+ * Arquivo de estilos para visualização interativa do algoritmo de Dijkstra
+ * Desenvolvido para ser responsivo e acessível
+ */
+
+/* Reset CSS e configurações básicas */
 * {
     margin: 0;
     padding: 0;
@@ -333,7 +340,77 @@ body, html {
     padding: 12px;
     font-size: 0.85rem;
     max-height: 200px;
-    overflow-y: auto;
+    overflow: auto;
+}
+
+/* Matriz com cabeçalhos fixos */
+.matrix-container {
+    position: relative;
+}
+
+.matrix-scroll-container {
+    max-height: 180px;
+    overflow: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.matrix-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.8rem;
+    background: white;
+}
+
+.matrix-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #e9ecef;
+    font-weight: bold;
+    z-index: 10;
+    border: 1px solid #dee2e6;
+    padding: 6px 8px;
+    text-align: center;
+}
+
+.matrix-table tbody th {
+    position: sticky;
+    left: 0;
+    background-color: #e9ecef;
+    font-weight: bold;
+    z-index: 5;
+    border: 1px solid #dee2e6;
+    padding: 6px 8px;
+    text-align: center;
+}
+
+.matrix-table thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 15;
+    background-color: #e9ecef;
+}
+
+.matrix-table td {
+    padding: 6px 8px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    background-color: white;
+    font-family: monospace;
+    min-width: 30px;
+}
+
+.matrix-table .cell-edge {
+    background-color: #dbeafe !important;
+    color: #1d4ed8;
+    font-weight: bold;
+}
+
+.matrix-table .cell-empty {
+    background-color: #f9fafb !important;
+    color: #9ca3af;
+    font-style: italic;
 }
 
 .result-item {
@@ -386,46 +463,11 @@ body, html {
     letter-spacing: 1px;
 }
 
-/* Estilos para a matriz de adjacência */
-.matrix-container table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8rem;
-}
 
-.matrix-container th,
-.matrix-container td {
-    padding: 4px 6px;
-    text-align: center;
-    border: 1px solid #dee2e6;
-}
 
-.matrix-container th {
-    background-color: #e9ecef;
-    font-weight: bold;
-}
+/* ===== RESPONSIVIDADE ===== */
+/* Media queries para diferentes tamanhos de tela */
 
-.matrix-container td {
-    background-color: white;
-}
-
-.matrix-container td:not(:first-child) {
-    font-family: monospace;
-}
-
-.matrix-container .cell-edge {
-    background-color: #dbeafe !important;
-    color: #1d4ed8;
-    font-weight: bold;
-}
-
-.matrix-container .cell-empty {
-    background-color: #f9fafb !important;
-    color: #9ca3af;
-    font-style: italic;
-}
-
-/* Media queries para responsividade */
 @media (max-width: 1200px) {
     .control-panel,
     .results-panel {
@@ -458,6 +500,24 @@ body, html {
     .container {
         min-height: 100vh;
         height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .header p {
+        font-size: 0.9rem;
+    }
+
+    .legend {
+        justify-content: center;
+    }
+
+    .legend-item {
+        font-size: 0.8rem;
     }
 }
 
