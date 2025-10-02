@@ -25,7 +25,7 @@ const CONFIG = {
     },
     GRAPH: {
         MIN_VERTICES: 2,
-        MAX_VERTICES: 20,
+        MAX_VERTICES: 26,
         MIN_WEIGHT: 1,
         MAX_WEIGHT: 9,
         DENSITY: {
@@ -82,9 +82,9 @@ elements.ctx = elements.canvas.getContext("2d");
 
 // ===== FUNÇÕES UTILITÁRIAS =====
 const utils = {
-    // Gera labels numéricos para vértices
+    // Gera labels alfabéticos para vértices
     generateVertexLabels: (count) =>
-        Array.from({ length: count }, (_, i) => (i + 1).toString()),
+        Array.from({ length: count }, (_, i) => String.fromCharCode(65 + i)),
 
     // Verifica se é dispositivo móvel
     isMobile: () => window.innerWidth < CONFIG.BREAKPOINT,
